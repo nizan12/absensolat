@@ -11,7 +11,7 @@
   --text-muted: #64748b;
   
   /* Glassmorphism */
-  --glass-bg: rgba(30, 41, 59, 0.4);
+  --glass-bg: rgba(30, 41, 59, 0.6);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --glass-blur: blur(12px);
@@ -247,7 +247,7 @@ p {
 
 /* Navbar */
 .navbar {
-  background: var(--glass-bg);
+  background: rgba(15, 23, 42, 0.95); /* More opaque for better readability */
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--glass-border);
