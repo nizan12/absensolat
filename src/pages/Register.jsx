@@ -27,10 +27,9 @@ const Register = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Ensure the first registered user or explicitly checked emails are admin, else user
-      // For demonstration, let's make user role default. 
-      // To test admin, you can manually set it in Firebase Console or hardcode an email here.
-      const userRole = email.includes('admin') ? 'admin' : 'user';
+      // Always set role to 'user' by default for new registrations.
+      // Roles can be elevated to 'admin' or 'super-admin' by an existing administrator.
+      const userRole = 'user';
 
       // Save user to Firestore
       await setDoc(doc(db, 'users', user.uid), {
