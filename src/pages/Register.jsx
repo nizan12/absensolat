@@ -20,9 +20,6 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // Get device fingerprint
-      const deviceId = await getDeviceFingerprint();
-
       // Create user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -31,15 +28,24 @@ const Register = () => {
       // Roles can be elevated to 'admin' or 'super-admin' by an existing administrator.
       const userRole = 'user';
 
+      // Get device fingerprint ONLY if NOT a privileged role
+      const isPrivilegedRole = userRole === 'admin' || userRole === 'super-admin';
+      const deviceId = isPrivilegedRole ? null : await getDeviceFingerprint();
+
       // Save user to Firestore
-      await setDoc(doc(db, 'users', user.uid), {
+      const userPayload = {
         uid: user.uid,
         name,
         email,
         role: userRole,
-        deviceFingerprint: deviceId, // Store the fingerprint!
         createdAt: serverTimestamp()
-      });
+      };
+
+      if (deviceId) {
+        userPayload.deviceFingerprint = deviceId;
+      }
+
+      await setDoc(doc(db, 'users', user.uid), userPayload);
 
       navigate('/');
     } catch (error) {

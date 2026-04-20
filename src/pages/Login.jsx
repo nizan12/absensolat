@@ -24,15 +24,19 @@ const Login = () => {
       const user = userCredential.user;
 
       // 2. Prevent "titip absen" => Check device fingerprint
-      const deviceId = await getDeviceFingerprint();
       const userDocRef = doc(db, 'users', user.uid);
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
         
-        // Admin user can log in from anywhere for dashboard access
-        if (userData.role !== 'admin') {
+        // Admin and Super Admin can log in from anywhere for dashboard access
+        const isPrivilegedRole = userData.role === 'admin' || userData.role === 'super-admin';
+
+        if (!isPrivilegedRole) {
+          // 2. Prevent "titip absen" => Check device fingerprint
+          const deviceId = await getDeviceFingerprint();
+
           // If the user's recorded fingerprint doesn't match the current device's fingerprint
           if (userData.deviceFingerprint && userData.deviceFingerprint !== deviceId) {
             // Unauthenticate locally to prevent bypass
